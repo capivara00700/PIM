@@ -1,5 +1,6 @@
 import mysql.connector
 import criptografia
+import perguntas
 
 #conectando com o banco de dados
 db = mysql.connector.connect(
@@ -23,6 +24,6 @@ def login(usuario, senha):
     val = (usuario, s1)
     cursor.execute(sql, val)
     if cursor.fetchall() != []:
-        print(f'Bem vindo!! {usuario}')
+        perguntas.exercicios()
     else:
         print('Erro senha ou usuario incorreto')
