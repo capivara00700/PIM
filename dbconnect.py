@@ -17,13 +17,14 @@ def cadastro(usuario, senha):
     val = (usuario, s1)
     cursor.execute(sql, val)
     db.commit()
+    print("Usuario cadastrado com sucesso!")
+    perguntas.exercicios()
 
 def login(usuario, senha):
-    sql = "SELECT usuario, senha from usuarios WHERE usuario = %s and senha = %s"
-    s1 = criptografia.descryptografar(senha)
-    val = (usuario, s1)
-    cursor.execute(sql, val)
-    if cursor.fetchall() != []:
+    cursor.execute("SELECT senha from usuarios WHERE usuario = %(usuario)s", ({'usuario': usuario, }))
+    msg = cursor.fetchone()
+    s1 = criptografia.descryptografar(msg[0])
+    if s1 == senha:
         perguntas.exercicios()
     else:
         print('Erro senha ou usuario incorreto')
