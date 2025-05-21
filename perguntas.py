@@ -1,28 +1,48 @@
-# Quiz de Programação com Menu de Nível
+def exercicios():
+    while True:
+        print("="*50 + "\nBem-vindo ao nosso programa de educação digital!!\nNosso objetivo é criar um ambiente interativo para que você possa \naprender logica de progrmação, boas praticas para proteção de dados \nentre outros assuntos.")
+        print("="*50 + "\nPrimeiro escolha o nível que você deseja acessar:")
+        print("Nível Fácil [1]\nNível Intermediário [2]")
+        escolhaNivel = input("> ")
+        print("="*50 + "\nAgora escolha qual tema você deseja acessar: ")
+        print("Tipos de Dados [1]\nEstrutura de Controle [2]\nVariáveis e Operadores [3]\nResolução de Problemas [4]")
+        escolhaTema = int(input("> "))
 
-def quiz(perguntas, nivel_nome):
+        if escolhaNivel == "1":
+            quiz(perguntas_faceis, topicos_disponiveis[escolhaTema], "Nível Fácil")
+            break
+        elif escolhaNivel == "2":
+            quiz(perguntas_intermediarias, topicos_disponiveis[escolhaTema], "Nível Intermediário")
+            break
+        else:
+            print("Você selecionou alguma opção inválida, por favor tente novamente.")
+#=================================================================================================
+def quiz(perguntas, tema, nivel_nome):
+    tipos_dados_perguntas = perguntas[tema]
+
     pontuacao = 0
-    total = sum(len(q) for q in perguntas.values())
-    print(f"\n📘 Iniciando o Quiz - {nivel_nome} 📘")
-    
-    for topico, questoes in perguntas.items():
-        print(f"\n🔹 Tópico: {topico}")
-        for i, q in enumerate(questoes, 1):
-            print(f"\n{i}) {q['pergunta']}")
-            for opcao in q["opcoes"]:
+
+    print("="*50+f"\nBem vindo ao tópico sobre {tema} ({nivel_nome})\nvocê gostaria de ver uma explicação sobre o assunto [1] \nou ir direto para a nossa atividade interativa? [2]")
+    escolha = int(input("> "))
+
+    if escolha == 1:
+        print('ola')
+    elif escolha == 2:
+        print("="*50+f'\nAqui você podera testar seus conhecimentos sobre \n{tema} e ver como foi o seu desempenho, mas não se preocupe \ncaso erre você tem varias tentavas. Boa sorte!!!')
+        for i, pergunta in enumerate(tipos_dados_perguntas, 1):
+            print(f"{i}) {pergunta['pergunta']}")
+            for opcao in pergunta["opcoes"]:
                 print(opcao)
             resposta = input("> ").lower()
-            if resposta == q["resposta"]:
+            
+            if resposta == pergunta["resposta"]:
                 print("✅ Resposta correta!\n")
                 pontuacao += 1
             else:
-                print(f"❌ Resposta incorreta. {q['explicacao']}\n")
-    
-    print(f"\n🏁 Pontuação final: {pontuacao} de {total} pontos possíveis.\n")
+                print(f"❌ Resposta incorreta. {pergunta['explicacao']}\n")
+        print(f"🏁 Você acertou {pontuacao} de {len(tipos_dados_perguntas)} perguntas.\n")
 
-
-# ============================ PERGUNTAS NÍVEL FÁCIL ============================
-
+#=====================================================================================
 perguntas_faceis = {
     "Tipos de Dados": [
         {
@@ -286,20 +306,9 @@ perguntas_intermediarias = {
         }
     ]
 }
-
-# ============================ MENU PRINCIPAL ============================
-
-def exercicios():
-    print("🎓 Bem-vindo ao Quiz de Lógica de Programação!")
-    print("Escolha o nível:")
-    print("1 - Nível Fácil")
-    print("2 - Nível Intermediário")
-
-    escolha = input("> ")
-
-    if escolha == "1":
-        quiz(perguntas_faceis, "Nível Fácil")
-    elif escolha == "2":
-        quiz(perguntas_intermediarias, "Nível Intermediário")
-    else:
-        print("❌ Opção inválida. Execute o programa novamente.")
+topicos_disponiveis = {
+    1: "Tipos de Dados",
+    2: "Estruturas de Controle",
+    3: "Variáveis e Operadores",
+    4: "Resolução de Problemas"
+}
