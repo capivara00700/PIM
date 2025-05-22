@@ -25,6 +25,25 @@ def login(usuario, senha):
     msg = cursor.fetchone()
     s1 = criptografia.descryptografar(msg[0])
     if s1 == senha:
-        perguntas.exercicios()
+        perguntas.exercicios(usuario)
     else:
         print('Erro senha ou usuario incorreto')
+
+def addPontos(pontos, dificuldade, tema, usuario):
+    #Recuperando o ID
+    cursor.execute("SELECT id from usuarios WHERE usuario = %(usuario)s", ({'usuario': usuario, }))
+    id = cursor.fetchone()
+    #Formatando o tema para facilitar o update no banco de dados
+    temaSemEsp = tema.replace(" ", "")
+    if dificuldade == "Nível Fácil":
+        temaf = temaSemEsp+"F"
+    elif dificuldade == "Nível Intermediário":
+        temaf = temaSemEsp+"M"
+    #adicionando os pontos a tabela
+    cursor.execute("SELECT %(id)s from pontos", ({'id': id[0], }))
+    if cursor.fetchall():
+        cursor.execute(f"UPDATE pontos SET {temaf} = {pontos} WHERE id = {id[0]}")
+        db.commit()
+    else:
+        cursor.execute(f"INSERT INTO pontos(id, {temaf}) VALUES ({id[0]}, {pontos})")
+        db.commit()
