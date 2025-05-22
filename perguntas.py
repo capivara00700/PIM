@@ -1,6 +1,8 @@
-def exercicios():
+import dbconnect
+
+def exercicios(nome):
     while True:
-        print("="*50 + "\nBem-vindo ao nosso programa de educação digital!!\nNosso objetivo é criar um ambiente interativo para que você possa \naprender logica de progrmação, boas praticas para proteção de dados \nentre outros assuntos.")
+        print("="*50 + f"\nBem-vindo {nome} ao nosso programa de educação digital!!\nNosso objetivo é criar um ambiente interativo para que você possa \naprender logica de progrmação, boas praticas para proteção de dados \nentre outros assuntos.")
         print("="*50 + "\nPrimeiro escolha o nível que você deseja acessar:")
         print("Nível Fácil [1]\nNível Intermediário [2]")
         escolhaNivel = input("> ")
@@ -9,15 +11,15 @@ def exercicios():
         escolhaTema = int(input("> "))
 
         if escolhaNivel == "1":
-            quiz(perguntas_faceis, topicos_disponiveis[escolhaTema], "Nível Fácil")
+            quiz(perguntas_faceis, topicos_disponiveis[escolhaTema], "Nível Fácil", nome)
             break
         elif escolhaNivel == "2":
-            quiz(perguntas_intermediarias, topicos_disponiveis[escolhaTema], "Nível Intermediário")
+            quiz(perguntas_intermediarias, topicos_disponiveis[escolhaTema], "Nível Intermediário", nome)
             break
         else:
             print("Você selecionou alguma opção inválida, por favor tente novamente.")
 #=================================================================================================
-def quiz(perguntas, tema, nivel_nome):
+def quiz(perguntas, tema, nivel_nome, nome):
     tipos_dados_perguntas = perguntas[tema]
 
     pontuacao = 0
@@ -25,22 +27,33 @@ def quiz(perguntas, tema, nivel_nome):
     print("="*50+f"\nBem vindo ao tópico sobre {tema} ({nivel_nome})\nvocê gostaria de ver uma explicação sobre o assunto [1] \nou ir direto para a nossa atividade interativa? [2]")
     escolha = int(input("> "))
 
-    if escolha == 1:
-        print('ola')
-    elif escolha == 2:
-        print("="*50+f'\nAqui você podera testar seus conhecimentos sobre \n{tema} e ver como foi o seu desempenho, mas não se preocupe \ncaso erre você tem varias tentavas. Boa sorte!!!')
-        for i, pergunta in enumerate(tipos_dados_perguntas, 1):
-            print(f"{i}) {pergunta['pergunta']}")
-            for opcao in pergunta["opcoes"]:
-                print(opcao)
-            resposta = input("> ").lower()
-            
-            if resposta == pergunta["resposta"]:
-                print("✅ Resposta correta!\n")
-                pontuacao += 1
+    while True: 
+            if escolha == 1:
+                print('='*50)
+                print(resumos[nivel_nome][tema])
+            elif escolha == 2:
+                print("="*50+f'\nAqui você podera testar seus conhecimentos sobre \n{tema} e ver como foi o seu desempenho, mas não se preocupe \ncaso erre, você tem varias tentavas. Boa sorte!!!\n')
+                for i, pergunta in enumerate(tipos_dados_perguntas, 1):
+                    print(f"{i}) {pergunta['pergunta']}")
+                    for opcao in pergunta["opcoes"]:
+                        print(opcao)
+                    resposta = input("> ").lower()
+                    
+                    if resposta == pergunta["resposta"]:
+                        print("✅ Resposta correta!\n")
+                        pontuacao += 1
+                    else:
+                        print(f"❌ Resposta incorreta. {pergunta['explicacao']}\n")
+                print(f"🏁 Você acertou {pontuacao} de {len(tipos_dados_perguntas)} perguntas.\n")
+                dbconnect.addPontos(pontuacao, nivel_nome, tema, nome) #Adicionando a pontuação
+            es = int(input("="*50+'\nOque gostaria de acessar a seguir?\nAtividade [1]\nEscolher outro Nivel/Tema [2]\nFechar o programa [3]\n> '))
+            if es == 1:
+                escolha += 1
+            elif es == 2:
+                exercicios()
             else:
-                print(f"❌ Resposta incorreta. {pergunta['explicacao']}\n")
-        print(f"🏁 Você acertou {pontuacao} de {len(tipos_dados_perguntas)} perguntas.\n")
+                print('Programa encerrado.')
+                break
 
 #=====================================================================================
 perguntas_faceis = {
@@ -174,7 +187,6 @@ perguntas_faceis = {
     ]
 }
 
-# ============================ PERGUNTAS NÍVEL INTERMEDIÁRIO ============================
 
 perguntas_intermediarias = {
     "Tipos de Dados": [
@@ -306,6 +318,106 @@ perguntas_intermediarias = {
         }
     ]
 }
+resumos = {
+        "Nível Fácil": {
+            "Tipos de Dados": ("""
+Em programação, tipos de dados indicam o tipo de informação com que estamos lidando.
+Os principais são:
+- int (inteiro): números como 5, -3, 100.
+- float (decimal): números com ponto, como 3.14.
+- str (string): textos entre aspas, como "olá".
+- bool (booleano): verdadeiro (True) ou falso (False).
+
+Cada tipo tem comportamentos diferentes e é usado para diferentes tarefas.
+"""
+            ),
+            "Estruturas de Controle": ( """
+As estruturas de controle determinam o fluxo do programa. Por exemplo:
+- if: executa algo se uma condição for verdadeira.
+- else: executa algo se a condição for falsa.
+- while: repete uma ação enquanto uma condição for verdadeira.
+
+Elas permitem que o programa tome decisões e repita comandos quando necessário.
+"""
+            ),
+            "Variáveis e Operadores": ( """
+Uma variável é como uma caixinha com um nome, onde guardamos um valor.
+Exemplo: idade = 20
+
+Operadores são símbolos que fazem operações:
+- + soma
+- - subtração
+- * multiplicação
+- / divisão
+
+Juntos, variáveis e operadores nos permitem guardar e calcular valores.
+"""
+            ),
+            "Resolução de Problemas": ( """
+Resolver problemas em programação envolve:
+1. Entender o problema.
+2. Pensar nos passos para resolvê-lo.
+3. Escrever esses passos no código.
+4. Testar e corrigir se necessário.
+
+Dividir o problema em partes menores ajuda muito!
+"""
+        )
+        },
+        "Nível Intermediário": {
+            "Tipos de Dados": ( """
+Além de saber quais são os tipos (int, float, str, bool), é importante entender como eles interagem:
+- "5" + "3" = "53" (texto concatenado)
+- 5 + 3 = 8 (soma numérica)
+
+Você também pode converter entre tipos:
+- int("10") → 10
+- str(50) → "50"
+
+Saber converter tipos evita erros e dá mais controle sobre o que o programa faz.
+"""
+            ),
+            "Estruturas de Controle": ( """
+Comandos como if, elif, else, for e while ajudam o programa a tomar decisões e repetir ações:
+- if...elif...else: avaliam várias possibilidades.
+- for: repete algo um número certo de vezes.
+- while: repete enquanto a condição for verdadeira.
+
+Exemplo:
+for i in range(5):
+    print(i)
+Isso imprime os números de 0 a 4.
+"""
+            ),
+            "Variáveis e Operadores": ( """
+Além dos operadores básicos (+, -, *, /), usamos comparações:
+- == igual
+- != diferente
+- > maior
+- < menor
+- >= maior ou igual
+- <= menor ou igual
+
+E operadores lógicos:
+- and: verdadeiro se duas condições forem verdadeiras.
+- or: verdadeiro se pelo menos uma for.
+- not: inverte o valor lógico.
+
+Esses recursos tornam as decisões do programa mais inteligentes.
+"""
+            ),
+            "Resolução de Problemas": ( """
+Resolver problemas envolve pensar na lógica antes de programar:
+1. Entrada: o que o usuário fornece.
+2. Processamento: o que o programa faz com isso.
+3. Saída: o que será mostrado ao final.
+
+Planejar bem usando algoritmos (passo a passo) ajuda muito.
+Um bom planejamento evita erros e economiza tempo.
+"""
+            )
+        }
+    }
 topicos_disponiveis = {
     1: "Tipos de Dados",
     2: "Estruturas de Controle",
