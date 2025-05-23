@@ -11,6 +11,14 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 
+def verificaUsuario(usuario):
+    cursor.execute("SELECT usuario from usuarios WHERE usuario = %(usuario)s", ({'usuario': usuario, }))
+    if cursor.fetchone():
+        print("Usuario já cadastrado, favor escolher outro nome de usuario.")
+        return False
+    else:
+        return True
+
 def cadastro(usuario, senha):
     sql = "INSERT INTO usuarios(usuario, senha) VALUES (%s, %s)"
     s1 = criptografia.cryptografar(senha)
@@ -18,7 +26,7 @@ def cadastro(usuario, senha):
     cursor.execute(sql, val)
     db.commit()
     print("Usuario cadastrado com sucesso!")
-    perguntas.exercicios()
+    perguntas.exercicios(usuario)
 
 def login(usuario, senha):
     cursor.execute("SELECT senha from usuarios WHERE usuario = %(usuario)s", ({'usuario': usuario, }))
@@ -41,9 +49,11 @@ def addPontos(pontos, dificuldade, tema, usuario):
         temaf = temaSemEsp+"M"
     #adicionando os pontos a tabela
     cursor.execute("SELECT %(id)s from pontos", ({'id': id[0], }))
-    if cursor.fetchall():
-        cursor.execute(f"UPDATE pontos SET {temaf} = {pontos} WHERE id = {id[0]}")
+    idSelect = cursor.fetchone()
+
+    if idSelect == None:
+        cursor.execute(f"INSERT INTO pontos(id, {temaf}) VALUES ({id[0]}, {pontos})")
         db.commit()
     else:
-        cursor.execute(f"INSERT INTO pontos(id, {temaf}) VALUES ({id[0]}, {pontos})")
+        cursor.execute(f"UPDATE pontos SET {temaf} = {pontos} WHERE id = {id[0]}")
         db.commit()
