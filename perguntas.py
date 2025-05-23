@@ -48,9 +48,9 @@ def quiz(perguntas, tema, nivel_nome, nome):
                 dbconnect.addPontos(pontuacao, nivel_nome, tema, nome) #Adicionando a pontuação
             es = int(input("="*50+'\nOque gostaria de acessar a seguir?\nAtividade [1]\nEscolher outro Nivel/Tema [2]\nFechar o programa [3]\n> '))
             if es == 1:
-                escolha += 1
+                escolha == escolha + 1
             elif es == 2:
-                exercicios()
+                exercicios(nome)
             else:
                 print('Programa encerrado.')
                 break
