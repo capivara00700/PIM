@@ -11,7 +11,13 @@ while True:
         dbconnect.login(usuario, senha)
         break
     elif e == 2: #--Cadastro--
-        usuario = str(input('Digite seu usuario: ')) #colocar um sistema para não ter dois usuarios com o mesmo nome
+        usuario = str(input('Digite seu usuario: ')) 
+        while True:
+            if dbconnect.verificaUsuario(usuario):
+                break
+            else:
+                usuario = str(input('Digite outro usuario: '))
+
         while True:
             s1 = str(input('Digite sua senha: '))
             s2 = str(input('Confirme sua senha: '))
